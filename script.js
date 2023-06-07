@@ -41,6 +41,9 @@ const labelSumOut = document.querySelector('.summary__value--out');
 const labelSumInterest = document.querySelector('.summary__value--interest');
 const labelTimer = document.querySelector('.timer');
 
+const wrongPin = document.querySelector('.login__input--pin-err');
+const wrongUser = document.querySelector('.login__input--user-err');
+
 const containerApp = document.querySelector('.app');
 const containerMovements = document.querySelector('.movements');
 
@@ -72,7 +75,7 @@ const displayMovements = function (movements) {
   });
 };
 
-displayMovements(account1.movements);
+// displayMovements(account1.movements);
 
 const calcDisplayBalance = function (movements) {
   const balance = movements.reduce((acc, mov) => {
@@ -81,9 +84,9 @@ const calcDisplayBalance = function (movements) {
   labelBalance.textContent = `${balance} $`;
 };
 
-calcDisplayBalance(account1.movements);
+// calcDisplayBalance(account1.movements);
 
-const calcDisplaySummary = function (movements) {
+const calcDisplaySummary = function (movements, interestRate) {
   const incomes = movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
@@ -96,13 +99,13 @@ const calcDisplaySummary = function (movements) {
 
   const interest = movements
     .filter(mov => mov > 0)
-    .map(deposit => (deposit * 1.2) / 100)
+    .map(deposit => (deposit * interestRate) / 100)
     .filter((int, i, arr) => int >= 1) //calc only if interest is higher than 1
     .reduce((acc, int) => acc + int, 0);
   labelSumInterest.textContent = `${interest} $`;
 };
 
-calcDisplaySummary(account1.movements);
+// calcDisplaySummary(account1.movements);
 
 //side effect with creating an username in accounts obj
 const createUsernames = accs =>
@@ -116,3 +119,38 @@ const createUsernames = accs =>
   );
 
 createUsernames(accounts);
+
+//Event Handlers
+let currentAcc;
+btnLogin.addEventListener('click', e => {
+  // Prevent form for submitting
+  e.preventDefault();
+  currentAcc = accounts.find(acc => acc.username === inputLoginUsername.value);
+  console.log(currentAcc);
+
+  if (currentAcc?.pin === Number(inputLoginPin.value)) {
+    labelWelcome.textContent = `Welcome back ${currentAcc.owner.split(' ')[0]}`;
+    containerApp.style.opacity = 100;
+    inputLoginPin.blur(); //to lose a focus on input
+
+    //clear input fields
+    inputLoginUsername.value = inputLoginPin.value = '';
+    wrongPin.style.opacity = 0;
+    inputLoginPin.style.border = 'none';
+
+    //display movements
+    displayMovements(currentAcc.movements);
+
+    //display balance
+    calcDisplayBalance(currentAcc.movements);
+
+    //display summary
+    calcDisplaySummary(currentAcc.movements, currentAcc.interestRate);
+  } else {
+    console.log('wrong pin');
+    containerApp.style.opacity = 0;
+    inputLoginPin.style.border = 'tomato 2px solid';
+    inputLoginPin.value = '';
+    wrongPin.style.opacity = 100;
+  }
+});
