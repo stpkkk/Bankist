@@ -38,6 +38,13 @@ nav {
 
 .login {
   display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.login--status {
+  color: tomato;
+  opacity: 0;
 }
 
 .login__input {
@@ -71,7 +78,6 @@ nav {
   color: inherit;
   cursor: pointer;
   transition: all 0.3s;
-  padding-bottom: 20px;
 }
 
 .login__btn:hover,
@@ -82,16 +88,16 @@ nav {
   color: #888;
 }
 
-.login__input--container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-}
-
 .login__input--pin-err,
 .login__input--user-err {
   display: block;
+  color: tomato;
+  opacity: 0;
+}
+
+.operation--status {
+  display: flex;
+  justify-content: end;
   color: tomato;
   opacity: 0;
 }
@@ -103,7 +109,7 @@ nav {
   margin: 4rem auto;
   display: grid;
   grid-template-columns: 4fr 3fr;
-  grid-template-rows: auto repeat(3, 15rem) auto;
+  grid-template-rows: auto repeat(3, 16rem) auto;
   gap: 2rem;
 
   /* NOTE This creates the fade in/out animation */

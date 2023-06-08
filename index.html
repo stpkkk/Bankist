@@ -20,25 +20,22 @@
       <p class="welcome">Log in to get started</p>
       <img src="logo.png" alt="Logo" class="logo" />
       <form class="login">
-        <div class="login__input--container">
+        <div>
           <input
             type="text"
             placeholder="user"
             class="login__input login__input--user"
           />
-          <span class="login__input--user-err">No such a user</span>
-        </div>
-        <!-- In practice, use type="password" -->
-        <div class="login__input--container">
+          <!-- In practice, use type="password" -->
           <input
             type="text"
             placeholder="PIN"
             maxlength="4"
             class="login__input login__input--pin"
           />
-          <span class="login__input--pin-err">Wrong PIN!</span>
+          <button class="login__btn">&rarr;</button>
         </div>
-        <button class="login__btn">&rarr;</button>
+        <div class="login--status">asas</div>
       </form>
     </nav>
 
@@ -83,6 +80,7 @@
 
       <!-- OPERATION: TRANSFERS -->
       <div class="operation operation--transfer">
+        <div class="operation--status">ewwe</div>
         <h2>Transfer money</h2>
         <form class="form form--transfer">
           <input type="text" class="form__input form__input--to" />
