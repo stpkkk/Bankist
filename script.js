@@ -43,6 +43,7 @@ const labelTimer = document.querySelector('.timer');
 
 const loginStatus = document.querySelector('.login--status');
 const operationStatus = document.querySelector('.operation--status');
+const closeAccStatus = document.querySelector('.close--status');
 
 const containerApp = document.querySelector('.app');
 const containerMovements = document.querySelector('.movements');
@@ -125,6 +126,7 @@ createUsernames(accounts);
 
 //Event Handlers
 
+//Login
 let currentAcc;
 btnLogin.addEventListener('click', e => {
   // Prevent form for submitting
@@ -154,6 +156,7 @@ btnLogin.addEventListener('click', e => {
   }
 });
 
+//Transfer
 btnTransfer.addEventListener('click', e => {
   e.preventDefault();
   const amount = Number(inputTransferAmount.value);
@@ -190,19 +193,52 @@ btnTransfer.addEventListener('click', e => {
     //Errors catching
   } else if (amount <= 0) {
     operationStatus.style.opacity = 100;
+    operationStatus.style.color = 'tomato';
+
     operationStatus.textContent = 'You can`t transfer 0 or less!';
     console.log('You can`t transfer 0 or less!');
   } else if (currentAcc.balance <= amount) {
     operationStatus.style.opacity = 100;
+    operationStatus.style.color = 'tomato';
+
     operationStatus.textContent = 'Not enough money!';
     console.log('Not enough money!');
   } else if (receiverAcc?.username === currentAcc.username) {
     operationStatus.style.opacity = 100;
+    operationStatus.style.color = 'tomato';
+
     operationStatus.textContent = 'You can`t transfer money to yourself!';
     console.log('You can`t transfer money to yourself!');
   } else if (!receiverAcc) {
     operationStatus.style.opacity = 100;
+    operationStatus.style.color = 'tomato';
+
     operationStatus.textContent = 'No client with such a name!';
     console.log('No client with such a name!');
+  }
+});
+
+//Delete acc
+btnClose.addEventListener('click', e => {
+  e.preventDefault();
+  console.log(currentAcc.pin);
+  if (
+    inputCloseUsername.value === currentAcc.username &&
+    Number(inputClosePin.value) === currentAcc.pin
+  ) {
+    //Find index to delete acc
+    const index = accounts.findIndex(
+      acc => acc.username === currentAcc.username
+    );
+
+    //Delete acc
+    accounts.splice(index, 1);
+
+    //Hide UI
+    containerApp.style.opacity = 0;
+  } else {
+    //Errors catching
+    closeAccStatus.style.opacity = 100;
+    closeAccStatus.textContent = 'The pin or user is incorrect';
   }
 });
