@@ -41,9 +41,10 @@ const labelSumOut = document.querySelector('.summary__value--out');
 const labelSumInterest = document.querySelector('.summary__value--interest');
 const labelTimer = document.querySelector('.timer');
 
-const loginStatus = document.querySelector('.login--status');
-const operationStatus = document.querySelector('.operation--status');
-const closeAccStatus = document.querySelector('.close--status');
+const statusLogin = document.querySelector('.login--status');
+const statusTransfer = document.querySelector('.transfer--status');
+const statusCloseAcc = document.querySelector('.close--status');
+const statusLoan = document.querySelector('.loan--status');
 
 const containerApp = document.querySelector('.app');
 const containerMovements = document.querySelector('.movements');
@@ -142,7 +143,7 @@ btnLogin.addEventListener('click', e => {
 
     //clear input fields
     inputLoginUsername.value = inputLoginPin.value = '';
-    loginStatus.textContent = ' ';
+    statusLogin.textContent = ' ';
 
     //Update UI
     updateUI(currentAcc);
@@ -151,8 +152,8 @@ btnLogin.addEventListener('click', e => {
     console.log('wrong pin');
     containerApp.style.opacity = 0;
     inputLoginPin.value = '';
-    loginStatus.style.opacity = 1;
-    loginStatus.textContent = 'The pin or user is incorrect';
+    statusLogin.style.opacity = 1;
+    statusLogin.textContent = 'The pin or user is incorrect';
   }
 });
 
@@ -178,42 +179,42 @@ btnTransfer.addEventListener('click', e => {
     updateUI(currentAcc);
 
     //Successful Status, clear inputs
-    operationStatus.style.color = 'green';
-    operationStatus.textContent = 'Successful!';
+    statusTransfer.style.color = 'green';
+    statusTransfer.textContent = 'Successful!';
     inputTransferTo.value = ' ';
     inputTransferAmount.value = '';
     inputTransferAmount.blur();
     setTimeout(() => {
-      operationStatus.style.opacity = 0;
+      statusTransfer.style.opacity = 0;
     }, 2000);
-    operationStatus.style.opacity = 100;
+    statusTransfer.style.opacity = 100;
 
     console.log('Transfer valid!');
 
     //Errors catching
   } else if (amount <= 0) {
-    operationStatus.style.opacity = 100;
-    operationStatus.style.color = 'tomato';
+    statusTransfer.style.opacity = 100;
+    statusTransfer.style.color = 'tomato';
 
-    operationStatus.textContent = 'You can`t transfer 0 or less!';
+    statusTransfer.textContent = 'You can`t transfer 0 or less!';
     console.log('You can`t transfer 0 or less!');
   } else if (currentAcc.balance <= amount) {
-    operationStatus.style.opacity = 100;
-    operationStatus.style.color = 'tomato';
+    statusTransfer.style.opacity = 100;
+    statusTransfer.style.color = 'tomato';
 
-    operationStatus.textContent = 'Not enough money!';
+    statusTransfer.textContent = 'Not enough money!';
     console.log('Not enough money!');
   } else if (receiverAcc?.username === currentAcc.username) {
-    operationStatus.style.opacity = 100;
-    operationStatus.style.color = 'tomato';
+    statusTransfer.style.opacity = 100;
+    statusTransfer.style.color = 'tomato';
 
-    operationStatus.textContent = 'You can`t transfer money to yourself!';
+    statusTransfer.textContent = 'You can`t transfer money to yourself!';
     console.log('You can`t transfer money to yourself!');
   } else if (!receiverAcc) {
-    operationStatus.style.opacity = 100;
-    operationStatus.style.color = 'tomato';
+    statusTransfer.style.opacity = 100;
+    statusTransfer.style.color = 'tomato';
 
-    operationStatus.textContent = 'No client with such a name!';
+    statusTransfer.textContent = 'No client with such a name!';
     console.log('No client with such a name!');
   }
 });
@@ -238,7 +239,31 @@ btnClose.addEventListener('click', e => {
     containerApp.style.opacity = 0;
   } else {
     //Errors catching
-    closeAccStatus.style.opacity = 100;
-    closeAccStatus.textContent = 'The pin or user is incorrect';
+    statusCloseAcc.style.opacity = 100;
+    statusCloseAcc.textContent = 'The pin or user is incorrect';
+  }
+});
+
+//Request a Loan
+btnLoan.addEventListener('click', e => {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+
+  //Any mov must be > 10% of requested loan
+  if (amount > 0 && currentAcc.movements.some(mov => mov >= amount * 0.1)) {
+    //Add mov
+    currentAcc.movements.push(amount);
+
+    //Update UI
+    updateUI(currentAcc);
+
+    inputLoanAmount.value = '';
+    inputLoanAmount.blur();
+    statusLoan.style.opacity = 0;
+    statusLoan.textContent = '';
+  } else {
+    statusLoan.style.opacity = 100;
+    statusLoan.textContent =
+      'You asking to much! Any deposit must be greater than 10% of your loan request';
   }
 });
