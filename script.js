@@ -36,6 +36,7 @@ const accounts = [account1, account2, account3, account4];
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
 const labelBalance = document.querySelector('.balance__value');
+const labelMovementsSum = document.querySelector('.movements-sum');
 const labelSumIn = document.querySelector('.summary__value--in');
 const labelSumOut = document.querySelector('.summary__value--out');
 const labelSumInterest = document.querySelector('.summary__value--interest');
@@ -84,6 +85,13 @@ const calcDisplayBalance = function (acc) {
   labelBalance.textContent = `${acc.balance} $`;
 };
 
+const calcDisplayBankMovements = function () {
+  const bankMovSum = accounts
+    .flatMap(acc => acc.movements)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelMovementsSum.textContent = bankMovSum;
+};
+
 const calcDisplaySummary = function (acc) {
   const incomes = acc.movements
     .filter(mov => mov > 0)
@@ -110,6 +118,8 @@ const updateUI = function (acc) {
   calcDisplayBalance(acc);
   //display summary
   calcDisplaySummary(acc);
+  // display bank balance
+  calcDisplayBankMovements();
 };
 
 //side effect with creating an username in accounts obj
