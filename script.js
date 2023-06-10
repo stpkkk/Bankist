@@ -64,9 +64,16 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovements = function (acc) {
+const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
-  acc.movements.forEach((mov, i) => {
+
+  //Sorting movements
+  const movs = sort
+    ? acc.movements.slice().sort((a, b) => a - b)
+    : acc.movements;
+
+  //Display movements
+  movs.forEach((mov, i) => {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
 	<div class="movements__row">
@@ -276,4 +283,12 @@ btnLoan.addEventListener('click', e => {
     statusLoan.textContent =
       'You asking to much! Any deposit must be greater than 10% of your loan request';
   }
+});
+
+//Sorting
+let sortedState = false;
+btnSort.addEventListener('click', e => {
+  e.preventDefault();
+  displayMovements(currentAcc, !sortedState);
+  sortedState = !sortedState;
 });
