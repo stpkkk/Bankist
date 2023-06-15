@@ -78,7 +78,7 @@ const displayMovements = function (acc, sort = false) {
     const html = `
 	<div class="movements__row">
 		<div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-		<div class="movements__value">${mov} $</div>
+		<div class="movements__value">${mov.toFixed(2)} $</div>
 	</div>`;
 
     containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -89,7 +89,7 @@ const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => {
     return (acc += mov);
   }, 0);
-  labelBalance.textContent = `${acc.balance} $`;
+  labelBalance.textContent = `${acc.balance.toFixed(2)} $`;
 };
 
 const calcDisplayBankMovements = function () {
@@ -103,19 +103,19 @@ const calcDisplaySummary = function (acc) {
   const incomes = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumIn.textContent = `${incomes} $`;
+  labelSumIn.textContent = `${incomes.toFixed(2)} $`;
 
   const outcomes = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumOut.textContent = `${Math.abs(outcomes)} $`;
+  labelSumOut.textContent = `${Math.abs(outcomes).toFixed(2)} $`;
 
   const interest = acc.movements
     .filter(mov => mov > 0)
     .map(deposit => (deposit * acc.interestRate) / 100)
     .filter((int, i, arr) => int >= 1) //calc only if interest rate is higher than 1
     .reduce((acc, int) => acc + int, 0);
-  labelSumInterest.textContent = `${interest} $`;
+  labelSumInterest.textContent = `${interest.toFixed(2)} $`;
 };
 
 const updateUI = function (acc) {
@@ -153,7 +153,7 @@ btnLogin.addEventListener('click', e => {
   currentAcc = accounts.find(acc => acc.username === inputLoginUsername.value);
   console.log(currentAcc);
 
-  if (currentAcc?.pin === Number(inputLoginPin.value)) {
+  if (currentAcc?.pin === +inputLoginPin.value) {
     labelWelcome.textContent = `Welcome back ${currentAcc.owner.split(' ')[0]}`;
     containerApp.style.opacity = 100;
     inputLoginPin.blur(); //to lose a focus on input
@@ -177,7 +177,7 @@ btnLogin.addEventListener('click', e => {
 //Transfer
 btnTransfer.addEventListener('click', e => {
   e.preventDefault();
-  const amount = Number(inputTransferAmount.value);
+  const amount = +inputTransferAmount.value;
   const receiverAcc = accounts.find(
     acc => acc.username === inputTransferTo.value
   );
@@ -198,7 +198,7 @@ btnTransfer.addEventListener('click', e => {
     //Successful Status, clear inputs
     statusTransfer.style.color = 'green';
     statusTransfer.textContent = 'Successful!';
-    inputTransferTo.value = ' ';
+    inputTransferTo.value = '';
     inputTransferAmount.value = '';
     inputTransferAmount.blur();
     setTimeout(() => {
@@ -242,7 +242,7 @@ btnClose.addEventListener('click', e => {
   console.log(currentAcc.pin);
   if (
     inputCloseUsername.value === currentAcc.username &&
-    Number(inputClosePin.value) === currentAcc.pin
+    +inputClosePin.value === currentAcc.pin
   ) {
     //Find index to delete acc
     const index = accounts.findIndex(
@@ -264,7 +264,7 @@ btnClose.addEventListener('click', e => {
 //Request a Loan
 btnLoan.addEventListener('click', e => {
   e.preventDefault();
-  const amount = Number(inputLoanAmount.value);
+  const amount = Math.floor(inputLoanAmount.value);
 
   //Any mov must be > 10% of requested loan
   if (amount > 0 && currentAcc.movements.some(mov => mov >= amount * 0.1)) {
