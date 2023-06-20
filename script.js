@@ -19,7 +19,7 @@ const account1 = {
     '2023-06-18T10:51:36.790Z',
   ],
   currency: 'EUR',
-  locale: 'en-UK',
+  locale: 'pt-PT',
 };
 
 const account2 = {
@@ -38,7 +38,7 @@ const account2 = {
     '2022-06-25T18:49:59.371Z',
     '2022-07-26T12:01:20.894Z',
   ],
-  currency: 'USD',
+  currency: 'RUB',
   locale: 'ru-RU',
 };
 
@@ -136,6 +136,13 @@ const formatMovementDate = function (date, acc) {
   return new Intl.DateTimeFormat(acc.locale).format(date);
 };
 
+const formatCur = function (value, locale, currency) {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+  }).format(value);
+};
+
 const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
 
@@ -151,11 +158,13 @@ const displayMovements = function (acc, sort = false) {
     const date = new Date(acc.movementsDates[i]);
     const displayDate = formatMovementDate(date, acc);
 
+    const formattedMov = formatCur(mov, acc.locale, acc.currency);
+
     const html = `
 	<div class="movements__row">
 		<div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
 		<div class="movements__date">${displayDate}</div>
-		<div class="movements__value">${mov.toFixed(2)} $</div>
+		<div class="movements__value">${formattedMov}</div>
 	</div>`;
 
     containerMovements.insertAdjacentHTML('afterbegin', html);
@@ -166,33 +175,38 @@ const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => {
     return (acc += mov);
   }, 0);
-  labelBalance.textContent = `${acc.balance.toFixed(2)} $`;
+
+  labelBalance.textContent = formatCur(acc.balance, acc.locale, acc.currency);
 };
 
-const calcDisplayBankMovements = function () {
+const calcDisplayBankMovements = function (acc) {
   const bankMovSum = accounts
     .flatMap(acc => acc.movements)
     .reduce((acc, mov) => acc + mov, 0);
-  labelMovementsSum.textContent = bankMovSum;
+  labelMovementsSum.textContent = formatCur(
+    bankMovSum,
+    acc.locale,
+    acc.currency
+  );
 };
 
 const calcDisplaySummary = function (acc) {
   const incomes = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumIn.textContent = `${incomes.toFixed(2)} $`;
+  labelSumIn.textContent = formatCur(incomes, acc.locale, acc.currency);
 
   const outcomes = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumOut.textContent = `${Math.abs(outcomes).toFixed(2)} $`;
+  labelSumOut.textContent = formatCur(outcomes, acc.locale, acc.currency);
 
   const interest = acc.movements
     .filter(mov => mov > 0)
     .map(deposit => (deposit * acc.interestRate) / 100)
     .filter((int, i, arr) => int >= 1) //calc only if interest rate is higher than 1
     .reduce((acc, int) => acc + int, 0);
-  labelSumInterest.textContent = `${interest.toFixed(2)} $`;
+  labelSumInterest.textContent = formatCur(interest, acc.locale, acc.currency);
 };
 
 const updateUI = function (acc) {
@@ -203,7 +217,7 @@ const updateUI = function (acc) {
   //display summary
   calcDisplaySummary(acc);
   // display bank balance
-  calcDisplayBankMovements();
+  calcDisplayBankMovements(acc);
 };
 
 //side effect with creating an username in accounts obj
@@ -225,9 +239,9 @@ createUsernames(accounts);
 let currentAcc;
 
 // //!FAKE ALWAYS LOGGED IN
-currentAcc = account1;
-updateUI(currentAcc);
-containerApp.style.opacity = 100;
+// currentAcc = account1;
+// updateUI(currentAcc);
+// containerApp.style.opacity = 100;
 
 btnLogin.addEventListener('click', e => {
   // Prevent form for submitting
