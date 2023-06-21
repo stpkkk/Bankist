@@ -233,10 +233,34 @@ const createUsernames = accs =>
 
 createUsernames(accounts);
 
+const startLogOutTimer = function () {
+  const tick = () => {
+    const min = String(Math.trunc(time / 60)).padStart(2, '0');
+    const sec = String(time % 60).padStart(2, '0');
+    //In each call, print the remaining time to UI
+    labelTimer.textContent = `${min}:${sec}`;
+
+    //When 0 seconds, stop timer and logout user
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = 'Log in to get started';
+      containerApp.style.opacity = 0;
+    }
+    //Decrease 1 sec
+    time--;
+  };
+  // Set time to 5 minutes
+  let time = 300;
+  //Call a timer every second
+  tick();
+  const timer = setInterval(tick, 1000);
+  return timer;
+};
+
 //Event Handlers
 
 //Login
-let currentAcc;
+let currentAcc, timer;
 
 // //!FAKE ALWAYS LOGGED IN
 // currentAcc = account1;
@@ -287,6 +311,10 @@ btnLogin.addEventListener('click', e => {
     inputLoginUsername.value = inputLoginPin.value = '';
     statusLogin.textContent = ' ';
 
+    //Timer
+    if (timer) clearInterval(timer);
+    timer = startLogOutTimer();
+
     //Update UI
     updateUI(currentAcc);
   } else {
@@ -323,6 +351,10 @@ btnTransfer.addEventListener('click', e => {
 
     //Update UI
     updateUI(currentAcc);
+
+    //Reset a Timer
+    clearInterval(timer);
+    timer = startLogOutTimer();
 
     //Successful Status, clear inputs
     statusTransfer.style.color = 'green';
@@ -397,14 +429,18 @@ btnLoan.addEventListener('click', e => {
 
   //Any mov must be > 10% of requested loan
   if (amount > 0 && currentAcc.movements.some(mov => mov >= amount * 0.1)) {
-    //Add mov
-    currentAcc.movements.push(amount);
+    setTimeout(() => {
+      //Add mov
+      currentAcc.movements.push(amount);
+      //Add loan date
+      currentAcc.movementsDates.push(new Date().toISOString());
+      //Update UI
+      updateUI(currentAcc);
+    }, 2500);
 
-    //Add loan date
-    currentAcc.movementsDates.push(new Date().toISOString());
-
-    //Update UI
-    updateUI(currentAcc);
+    //Reset a Timer
+    clearInterval(timer);
+    timer = startLogOutTimer();
 
     inputLoanAmount.value = '';
     inputLoanAmount.blur();
