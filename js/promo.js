@@ -7,6 +7,8 @@ const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
+const buttonScrollTo = document.querySelector('.btn--scroll-to');
+const section1 = document.querySelector('#section--1');
 
 const openModal = function (e) {
   e.preventDefault();
@@ -42,3 +44,10 @@ document
   .addEventListener('click', () => message.remove());
 message.style.background = '#37383d';
 message.style.width = '120%';
+
+//Smooth scroll
+buttonScrollTo.addEventListener('click', e => {
+  section1.scrollIntoView({
+    behavior: 'smooth',
+  });
+});
