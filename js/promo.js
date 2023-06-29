@@ -36,7 +36,9 @@ const message = document.createElement('div');
 message.classList.add('cookie');
 message.innerHTML =
   'We use cookies for improved functionality and analytics. <button class="btn btn--close-cookie">Got it!</button>';
-header.before(message);
+header.prepend(message);
 document
   .querySelector('.btn--close-cookie')
   .addEventListener('click', () => message.remove());
+message.style.background = '#37383d';
+message.style.width = '120%';
