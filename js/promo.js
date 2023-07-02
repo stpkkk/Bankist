@@ -45,9 +45,30 @@ document
 message.style.background = '#37383d';
 message.style.width = '120%';
 
-//Smooth scroll
-buttonScrollTo.addEventListener('click', e => {
+//Button scrolling
+buttonScrollTo.addEventListener('click', () => {
   section1.scrollIntoView({
     behavior: 'smooth',
   });
+});
+
+//Page Navigation
+// document.querySelectorAll('.nav__link').forEach(el => {
+//   el.addEventListener('click', function (e) {
+//     e.preventDefault();
+//     const id = this.getAttribute('href'); //this === el
+//     document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+//     console.log(id);
+//   });
+// });
+
+//1. Add eventListener to common parent element
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  //2. Determine what element originated the event
+  //Matching strategy
+  if (e.target.classList.contains('nav__link')) {
+    e.preventDefault();
+    const id = e.target.getAttribute('href');
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+  }
 });

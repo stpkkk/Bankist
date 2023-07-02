@@ -145,6 +145,8 @@ img {
   margin-left: 4rem;
 }
 
+.nav__link--login:link,
+.nav__link--login:visited,
 .nav__link:link,
 .nav__link:visited {
   font-size: 1.7rem;
