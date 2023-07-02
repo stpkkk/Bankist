@@ -1,6 +1,5 @@
 'use strict';
 
-///////////////////////////////////////
 // Modal window
 
 const modal = document.querySelector('.modal');
@@ -52,23 +51,36 @@ buttonScrollTo.addEventListener('click', () => {
   });
 });
 
-//Page Navigation
-// document.querySelectorAll('.nav__link').forEach(el => {
-//   el.addEventListener('click', function (e) {
-//     e.preventDefault();
-//     const id = this.getAttribute('href'); //this === el
-//     document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
-//     console.log(id);
-//   });
-// });
-
-//1. Add eventListener to common parent element
+//Page Navigation, smooth scroll
 document.querySelector('.nav__links').addEventListener('click', function (e) {
-  //2. Determine what element originated the event
-  //Matching strategy
   if (e.target.classList.contains('nav__link')) {
     e.preventDefault();
     const id = e.target.getAttribute('href');
     document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
   }
+});
+
+//Tabbed component
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
+
+tabsContainer.addEventListener('click', function (e) {
+  const clicked = e.target.closest('.operations__tab');
+
+  // Guard Clause
+  if (!clicked) return;
+
+  // Remove active classes
+  tabs.forEach(t => t.classList.remove('operations__tab--active'));
+  tabsContent.forEach(c => c.classList.remove('operations__content--active'));
+
+  // Active tab
+  clicked.classList.add('operations__tab--active');
+
+  // Activate content area
+  // console.log(clicked.dataset.tab);
+  document
+    .querySelector(`.operations__content--${clicked.dataset.tab}`)
+    .classList.add('operations__content--active');
 });
