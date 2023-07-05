@@ -141,3 +141,32 @@ allSections.forEach(section => {
   sectionObserver.observe(section);
   section.classList.add('section--hidden');
 });
+
+//Lazy Loading Images
+const images = document.querySelectorAll('img[data-src]');
+
+const lazyLoading = function (entries, observer) {
+  const [entry] = entries;
+  if (!entry.isIntersecting) return;
+
+  //Replace src with data-src
+  entry.target.src = entry.target.dataset.src;
+
+  //Remove blur filter after images loading done with "load" event
+  entry.target.addEventListener('load', () =>
+    entry.target.classList.remove('lazy-img')
+  );
+
+  //stop observe
+  observer.unobserve(entry.target);
+};
+
+const imgObserver = new IntersectionObserver(lazyLoading, {
+  root: null,
+  threshold: 0,
+  rootMargin: '-200px',
+});
+
+images.forEach(img => {
+  imgObserver.observe(img);
+});
