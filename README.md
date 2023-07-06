@@ -1,4 +1,4 @@
-# <a href="stpk-bankist.netlify.app">Bankist</a>
+# <a href="https://stpk-bankist.netlify.app">Bankist</a>
 
 Bankist is a fictional and minimalistic online banking application.
 
